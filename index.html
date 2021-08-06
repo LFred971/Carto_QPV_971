@@ -1,0 +1,526 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/qgis2web.css"><link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-search.css">
+        <link rel="stylesheet" href="css/filter.css">
+<link rel="stylesheet" href="css/nouislider.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <link rel="stylesheet" href="css/leaflet-measure.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title></title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet.wms.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="js/leaflet-measure.js"></script>
+        <script src="js/proj4.js"></script>
+        <script src="js/proj4leaflet.js"></script>
+        <script src="js/leaflet-search.js"></script>
+        <script src="js/tailDT.js"></script>
+<script src="js/nouislider.min.js"></script>
+<script src="js/wNumb.js"></script>
+        <script src="data/N_QPV_971_2.js"></script>
+        <script src="data/COMMUNEcopier_3.js"></script>
+        <script>
+        var crs = new L.Proj.CRS('EPSG:32620', '+proj=utm +zone=20 +datum=WGS84 +units=m +no_defs', {
+            resolutions: [2800, 1400, 700, 350, 175, 84, 42, 21, 11.2, 5.6, 2.8, 1.4, 0.7, 0.35, 0.14, 0.07],
+        });
+        var map = L.map('map', {
+            crs: crs,
+            continuousWorld: false,
+            worldCopyJump: false, 
+            zoomControl:true, maxZoom:12, minZoom:3
+        }).fitBounds([[16.027302546085625,-61.5833823003031],[16.054714417108418,-61.52988275627213]]);
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        var measureControl = new L.Control.Measure({
+            position: 'topleft',
+            primaryLengthUnit: 'meters',
+            secondaryLengthUnit: 'kilometers',
+            primaryAreaUnit: 'sqmeters',
+            secondaryAreaUnit: 'hectares'
+        });
+        measureControl.addTo(map);
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .innerHTML = '';
+        document.getElementsByClassName('leaflet-control-measure-toggle')[0]
+        .className += ' fas fa-ruler';
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            map.setMaxBounds(map.getBounds());
+        }
+        map.createPane('pane_satellitegoogle_0');
+        map.getPane('pane_satellitegoogle_0').style.zIndex = 400;
+        var layer_satellitegoogle_0 = L.tileLayer('https://mt1.google.com/vt/lyrs=s&x={x}&y={y}&z={z}', {
+            pane: 'pane_satellitegoogle_0',
+            opacity: 0.7,
+            attribution: '',
+            minZoom: 3,
+            maxZoom: 12,
+        });
+        layer_satellitegoogle_0;
+        map.addLayer(layer_satellitegoogle_0);
+        map.createPane('pane_PlanIGNv2_1');
+        map.getPane('pane_PlanIGNv2_1').style.zIndex = 401;
+        var layer_PlanIGNv2_1 = L.WMS.layer("https://wxs.ign.fr/choisirgeoportail/geoportail/r/wms?", "GEOGRAPHICALGRIDSYSTEMS.PLANIGNV2", {
+            pane: 'pane_PlanIGNv2_1',
+            format: 'image/jpeg',
+            uppercase: true,
+            transparent: true,
+            continuousWorld : true,
+            tiled: true,
+            info_format: 'text/html',
+            opacity: 1,
+            identify: false,
+            attribution: '',
+        });
+        map.addLayer(layer_PlanIGNv2_1);
+        function pop_N_QPV_971_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CODE_QP'] !== null ? autolinker.link(feature.properties['CODE_QP'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOM_QP'] !== null ? autolinker.link(feature.properties['NOM_QP'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['COMMUNE_QP'] !== null ? autolinker.link(feature.properties['COMMUNE_QP'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['Type'] !== null ? autolinker.link(feature.properties['Type'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_N_QPV_971_2_0() {
+            return {
+                pane: 'pane_N_QPV_971_2',
+                opacity: 1,
+                color: 'rgba(255,183,0,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 2.0, 
+                fillOpacity: 0,
+                interactive: true,
+            }
+        }
+        map.createPane('pane_N_QPV_971_2');
+        map.getPane('pane_N_QPV_971_2').style.zIndex = 402;
+        map.getPane('pane_N_QPV_971_2').style['mix-blend-mode'] = 'normal';
+        var layer_N_QPV_971_2 = new L.geoJson(json_N_QPV_971_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_N_QPV_971_2',
+            layerName: 'layer_N_QPV_971_2',
+            pane: 'pane_N_QPV_971_2',
+            onEachFeature: pop_N_QPV_971_2,
+            style: style_N_QPV_971_2_0,
+        });
+        bounds_group.addLayer(layer_N_QPV_971_2);
+        map.addLayer(layer_N_QPV_971_2);
+        function pop_COMMUNEcopier_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['NOM'] !== null ? autolinker.link(feature.properties['NOM'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['CODE_INSEE'] !== null ? autolinker.link(feature.properties['CODE_INSEE'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <td colspan="2">' + (feature.properties['RPLS2020'] !== null ? autolinker.link(feature.properties['RPLS2020'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            layer.bindPopup(popupContent, {maxHeight: 400});
+        }
+
+        function style_COMMUNEcopier_3_0() {
+            return {
+                pane: 'pane_COMMUNEcopier_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fillOpacity: 0,
+                interactive: false,
+            }
+        }
+        map.createPane('pane_COMMUNEcopier_3');
+        map.getPane('pane_COMMUNEcopier_3').style.zIndex = 403;
+        map.getPane('pane_COMMUNEcopier_3').style['mix-blend-mode'] = 'normal';
+        var layer_COMMUNEcopier_3 = new L.geoJson(json_COMMUNEcopier_3, {
+            attribution: '',
+            interactive: false,
+            dataVar: 'json_COMMUNEcopier_3',
+            layerName: 'layer_COMMUNEcopier_3',
+            pane: 'pane_COMMUNEcopier_3',
+            onEachFeature: pop_COMMUNEcopier_3,
+            style: style_COMMUNEcopier_3_0,
+        });
+        bounds_group.addLayer(layer_COMMUNEcopier_3);
+        map.addLayer(layer_COMMUNEcopier_3);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        L.control.layers(baseMaps,{'<img src="legend/COMMUNEcopier_3.png" /> COMMUNE copier': layer_COMMUNEcopier_3,'<img src="legend/N_QPV_971_2.png" /> N_QPV_971': layer_N_QPV_971_2,"Plan IGN v2": layer_PlanIGNv2_1,"satellite google": layer_satellitegoogle_0,}).addTo(map);
+        setBounds();
+        var i = 0;
+        layer_COMMUNEcopier_3.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((exp_label_COMMUNEcopier_3_eval_expression(context) !== null?String('<div style="color: #000000; font-size: 7pt; font-weight: bold; font-family: \'MS Shell Dlg 2\', sans-serif;">' + exp_label_COMMUNEcopier_3_eval_expression(context)) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_COMMUNEcopier_3'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+        map.addControl(new L.Control.Search({
+            layer: layer_N_QPV_971_2,
+            initial: false,
+            hideMarkerOnCollapse: true,
+            propertyName: 'COMMUNE_QP'}));
+        document.getElementsByClassName('search-button')[0].className +=
+         ' fa fa-binoculars';
+        var mapDiv = document.getElementById('map');
+        var row = document.createElement('div');
+        row.className="row";
+        row.id="all";
+        row.style.height = "100%";
+        var col1 = document.createElement('div');
+        col1.className="col9";
+        col1.id = "mapWindow";
+        col1.style.height = "99%";
+        col1.style.width = "80%";
+        col1.style.display = "inline-block";
+        var col2 = document.createElement('div');
+        col2.className="col3";
+        col2.id = "menu";
+        col2.style.display = "inline-block";
+        mapDiv.parentNode.insertBefore(row, mapDiv);
+        document.getElementById("all").appendChild(col1);
+        document.getElementById("all").appendChild(col2);
+        col1.appendChild(mapDiv)
+        var Filters = {"RPLS2020": "int","COMMUNE_QP": "str","CODE_QP": "str","NOM_QP": "str"};
+        function filterFunc() {
+          map.eachLayer(function(lyr){
+          if ("options" in lyr && "dataVar" in lyr["options"]){
+            features = this[lyr["options"]["dataVar"]].features.slice(0);
+            try{
+              for (key in Filters){
+                keyS = key.replace(/[^a-zA-Z0-9_]/g, "")
+                if (Filters[key] == "str" || Filters[key] == "bool"){
+                  var selection = [];
+                  var options = document.getElementById("sel_" + keyS).options
+                  for (var i=0; i < options.length; i++) {
+                    if (options[i].selected) selection.push(options[i].value);
+                  }
+                    try{
+                      if (key in features[0].properties){
+                        for (i = features.length - 1;
+                          i >= 0; --i){
+                          if (selection.indexOf(
+                          features[i].properties[key])<0
+                          && selection.length>0) {
+                          features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                  }
+                }
+                if (Filters[key] == "int"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (parseInt(features[i].properties[key])
+                          < sliderVals[0]
+                          || parseInt(features[i].properties[key])
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "real"){
+                  sliderVals =  document.getElementById(
+                    "div_" + keyS).noUiSlider.get();
+                  try{
+                    if (key in features[0].properties){
+                    for (i = features.length - 1; i >= 0; --i){
+                      if (features[i].properties[key]
+                          < sliderVals[0]
+                          || features[i].properties[key]
+                          > sliderVals[1]){
+                            features.splice(i,1);
+                          }
+                        }
+                      }
+                    } catch(err){
+                    }
+                  }
+                if (Filters[key] == "date"
+                  || Filters[key] == "datetime"
+                  || Filters[key] == "time"){
+                  try{
+                    if (key in features[0].properties){
+                      HTMLkey = key.replace(/[&\/\\#,+()$~%.'":*?<>{} ]/g, '');
+                      startdate = document.getElementById("dat_" +
+                        HTMLkey + "_date1").value.replace(" ", "T");
+                      enddate = document.getElementById("dat_" +
+                        HTMLkey + "_date2").value.replace(" ", "T");
+                      for (i = features.length - 1; i >= 0; --i){
+                        if (features[i].properties[key] < startdate
+                          || features[i].properties[key] > enddate){
+                          features.splice(i,1);
+                        }
+                      }
+                    }
+                  } catch(err){
+                  }
+                }
+              }
+            } catch(err){
+            }
+          this[lyr["options"]["layerName"]].clearLayers();
+          this[lyr["options"]["layerName"]].addData(features);
+        var i = 0;
+        layer_COMMUNEcopier_3.eachLayer(function(layer) {
+            var context = {
+                feature: layer.feature,
+                variables: {}
+            };
+            layer.bindTooltip((exp_label_COMMUNEcopier_3_eval_expression(context) !== null?String('<div style="color: #000000; font-size: 7pt; font-weight: bold; font-family: \'MS Shell Dlg 2\', sans-serif;">' + exp_label_COMMUNEcopier_3_eval_expression(context)) + '</div>':''), {permanent: true, offset: [-0, -16], className: 'css_COMMUNEcopier_3'});
+            labels.push(layer);
+            totalMarkers += 1;
+              layer.added = true;
+              addLabel(layer, i);
+              i++;
+        });
+          }
+          })
+        }
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_RPLS2020 = document.createElement("div");
+            div_RPLS2020.id = "div_RPLS2020";
+            div_RPLS2020.className = "slider";
+            document.getElementById("menu").appendChild(div_RPLS2020);
+            var lab_RPLS2020 = document.createElement('div');
+            lab_RPLS2020.innerHTML  = 'RPLS2020: <span id="val_RPLS2020"></span>';
+            lab_RPLS2020.className = 'filterlabel';
+            document.getElementById("menu").appendChild(lab_RPLS2020);
+            var reset_RPLS2020 = document.createElement('div');
+            reset_RPLS2020.innerHTML = 'clear filter';
+            reset_RPLS2020.className = 'filterlabel';
+            lab_RPLS2020.className = 'filterlabel';
+            reset_RPLS2020.onclick = function() {
+                sel_RPLS2020.noUiSlider.reset();
+            };
+            document.getElementById("menu").appendChild(reset_RPLS2020);
+            var sel_RPLS2020 = document.getElementById('div_RPLS2020');
+            noUiSlider.create(sel_RPLS2020, {
+                connect: true,
+                start: [0, 941],
+                step: 1,
+                format: wNumb({
+                    decimals: 0,
+                    }),
+                range: {
+                min: 0,
+                max: 941
+                }
+            });
+            sel_RPLS2020.noUiSlider.on('update', function (values) {
+            filterVals =[];
+            for (value in values){
+            filterVals.push(parseInt(value))
+            }
+            val_RPLS2020 = document.getElementById('val_RPLS2020');
+            val_RPLS2020.innerHTML = values.join(' - ');
+                filterFunc()
+            });
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_COMMUNE_QP = document.createElement('div');
+            div_COMMUNE_QP.id = "div_COMMUNE_QP";
+            div_COMMUNE_QP.className= "filterselect";
+            document.getElementById("menu").appendChild(div_COMMUNE_QP);
+            sel_COMMUNE_QP = document.createElement('select');
+            sel_COMMUNE_QP.multiple = true;
+            sel_COMMUNE_QP.size = 9;
+            sel_COMMUNE_QP.id = "sel_COMMUNE_QP";
+            var COMMUNE_QP_options_str = "<option value='' unselected></option>";
+            sel_COMMUNE_QP.onchange = function(){filterFunc()};
+            COMMUNE_QP_options_str  += '<option value="Baillif">Baillif</option>';
+            COMMUNE_QP_options_str  += '<option value="Basse-Terre">Basse-Terre</option>';
+            COMMUNE_QP_options_str  += '<option value="Capesterre-Belle-Eau">Capesterre-Belle-Eau</option>';
+            COMMUNE_QP_options_str  += '<option value="Le Moule">Le Moule</option>';
+            COMMUNE_QP_options_str  += '<option value="Les Abymes">Les Abymes</option>';
+            COMMUNE_QP_options_str  += '<option value="Les Abymes, Pointe-à-Pitre">Les Abymes, Pointe-à-Pitre</option>';
+            COMMUNE_QP_options_str  += '<option value="Pointe-à-Pitre">Pointe-à-Pitre</option>';
+            COMMUNE_QP_options_str  += '<option value="Pointe-à-Pitre, Les Abymes">Pointe-à-Pitre, Les Abymes</option>';
+            COMMUNE_QP_options_str  += '<option value="Sainte-Rose">Sainte-Rose</option>';
+            sel_COMMUNE_QP.innerHTML = COMMUNE_QP_options_str;
+            div_COMMUNE_QP.appendChild(sel_COMMUNE_QP);
+            var lab_COMMUNE_QP = document.createElement('div');
+            lab_COMMUNE_QP.innerHTML = 'COMMUNE_QP';
+            lab_COMMUNE_QP.className = 'filterlabel';
+            div_COMMUNE_QP.appendChild(lab_COMMUNE_QP);
+            var reset_COMMUNE_QP = document.createElement('div');
+            reset_COMMUNE_QP.innerHTML = 'clear filter';
+            reset_COMMUNE_QP.className = 'filterlabel';
+            reset_COMMUNE_QP.onclick = function() {
+                var options = document.getElementById("sel_COMMUNE_QP").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_COMMUNE_QP.appendChild(reset_COMMUNE_QP);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_CODE_QP = document.createElement('div');
+            div_CODE_QP.id = "div_CODE_QP";
+            div_CODE_QP.className= "filterselect";
+            document.getElementById("menu").appendChild(div_CODE_QP);
+            sel_CODE_QP = document.createElement('select');
+            sel_CODE_QP.multiple = true;
+            sel_CODE_QP.size = 10;
+            sel_CODE_QP.id = "sel_CODE_QP";
+            var CODE_QP_options_str = "<option value='' unselected></option>";
+            sel_CODE_QP.onchange = function(){filterFunc()};
+            CODE_QP_options_str  += '<option value="NULL">NULL</option>';
+            CODE_QP_options_str  += '<option value="QP971001">QP971001</option>';
+            CODE_QP_options_str  += '<option value="QP971002">QP971002</option>';
+            CODE_QP_options_str  += '<option value="QP971003">QP971003</option>';
+            CODE_QP_options_str  += '<option value="QP971004">QP971004</option>';
+            CODE_QP_options_str  += '<option value="QP971005">QP971005</option>';
+            CODE_QP_options_str  += '<option value="QP971006">QP971006</option>';
+            CODE_QP_options_str  += '<option value="QP971007">QP971007</option>';
+            CODE_QP_options_str  += '<option value="QP971008">QP971008</option>';
+            CODE_QP_options_str  += '<option value="QP971009">QP971009</option>';
+            CODE_QP_options_str  += '<option value="QP971010">QP971010</option>';
+            CODE_QP_options_str  += '<option value="QP971011">QP971011</option>';
+            CODE_QP_options_str  += '<option value="QP971012">QP971012</option>';
+            CODE_QP_options_str  += '<option value="QP971013">QP971013</option>';
+            CODE_QP_options_str  += '<option value="QP971014">QP971014</option>';
+            CODE_QP_options_str  += '<option value="QP971015">QP971015</option>';
+            CODE_QP_options_str  += '<option value="QP971016">QP971016</option>';
+            sel_CODE_QP.innerHTML = CODE_QP_options_str;
+            div_CODE_QP.appendChild(sel_CODE_QP);
+            var lab_CODE_QP = document.createElement('div');
+            lab_CODE_QP.innerHTML = 'CODE_QP';
+            lab_CODE_QP.className = 'filterlabel';
+            div_CODE_QP.appendChild(lab_CODE_QP);
+            var reset_CODE_QP = document.createElement('div');
+            reset_CODE_QP.innerHTML = 'clear filter';
+            reset_CODE_QP.className = 'filterlabel';
+            reset_CODE_QP.onclick = function() {
+                var options = document.getElementById("sel_CODE_QP").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_CODE_QP.appendChild(reset_CODE_QP);
+            document.getElementById("menu").appendChild(
+                document.createElement("div"));
+            var div_NOM_QP = document.createElement('div');
+            div_NOM_QP.id = "div_NOM_QP";
+            div_NOM_QP.className= "filterselect";
+            document.getElementById("menu").appendChild(div_NOM_QP);
+            sel_NOM_QP = document.createElement('select');
+            sel_NOM_QP.multiple = true;
+            sel_NOM_QP.size = 10;
+            sel_NOM_QP.id = "sel_NOM_QP";
+            var NOM_QP_options_str = "<option value='' unselected></option>";
+            sel_NOM_QP.onchange = function(){filterFunc()};
+            NOM_QP_options_str  += '<option value="NULL">NULL</option>';
+            NOM_QP_options_str  += '<option value="Bananier - Haute Plaine">Bananier - Haute Plaine</option>';
+            NOM_QP_options_str  += '<option value="Boissard-Morne Flory">Boissard-Morne Flory</option>';
+            NOM_QP_options_str  += '<option value="Bologne-Rivière Des Pères - Calebassier - Pintade - Chevalier Saint Georges - Mallian">Bologne-Rivière Des Pères - Calebassier - Pintade - Chevalier Saint Georges - Mallian</option>';
+            NOM_QP_options_str  += '<option value="Bourg - Saint Robert - Cadet - Bois Raimbault- Jean Jaurès">Bourg - Saint Robert - Cadet - Bois Raimbault- Jean Jaurès</option>';
+            NOM_QP_options_str  += '<option value="Champ Grille 2">Champ Grille 2</option>';
+            NOM_QP_options_str  += '<option value="Chemin Neuf Carenage Darboussier">Chemin Neuf Carenage Darboussier</option>';
+            NOM_QP_options_str  += '<option value="Cour Charneau-Raizet">Cour Charneau-Raizet</option>';
+            NOM_QP_options_str  += '<option value="Grand Camp">Grand Camp</option>';
+            NOM_QP_options_str  += '<option value="La Boucan">La Boucan</option>';
+            NOM_QP_options_str  += '<option value="Le Bourg">Le Bourg</option>';
+            NOM_QP_options_str  += '<option value="Mortenol">Mortenol</option>';
+            NOM_QP_options_str  += '<option value="Raizet">Raizet</option>';
+            NOM_QP_options_str  += '<option value="Sarlassone Petit Pérou">Sarlassone Petit Pérou</option>';
+            NOM_QP_options_str  += '<option value="Vieux Bourg - Les Lauriers">Vieux Bourg - Les Lauriers</option>';
+            sel_NOM_QP.innerHTML = NOM_QP_options_str;
+            div_NOM_QP.appendChild(sel_NOM_QP);
+            var lab_NOM_QP = document.createElement('div');
+            lab_NOM_QP.innerHTML = 'NOM_QP';
+            lab_NOM_QP.className = 'filterlabel';
+            div_NOM_QP.appendChild(lab_NOM_QP);
+            var reset_NOM_QP = document.createElement('div');
+            reset_NOM_QP.innerHTML = 'clear filter';
+            reset_NOM_QP.className = 'filterlabel';
+            reset_NOM_QP.onclick = function() {
+                var options = document.getElementById("sel_NOM_QP").options;
+                for (var i=0; i < options.length; i++) {
+                    options[i].selected = false;
+                }
+                filterFunc();
+            };
+            div_NOM_QP.appendChild(reset_NOM_QP);
+        resetLabels([layer_COMMUNEcopier_3]);
+        map.on("zoomend", function(){
+            resetLabels([layer_COMMUNEcopier_3]);
+        });
+        map.on("layeradd", function(){
+            resetLabels([layer_COMMUNEcopier_3]);
+        });
+        map.on("layerremove", function(){
+            resetLabels([layer_COMMUNEcopier_3]);
+        });
+        </script>
+    </body>
+</html>
